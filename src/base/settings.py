@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.forms",
     "debug_toolbar",
+    "apps.accounts",
     "apps.units",
     "apps.employees",
     "apps.outputs",
