@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "apps.units",
     "apps.employees",
+    "apps.outputs",
 ]
 
 
