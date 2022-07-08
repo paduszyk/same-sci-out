@@ -1,0 +1,9 @@
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+known_first_party = "base"
+known_django = "django"
+sections = ["FUTURE", "STDLIB", "DJANGO", "FIRSTPARTY", "THIRDPARTY", "LOCALFOLDER"]
