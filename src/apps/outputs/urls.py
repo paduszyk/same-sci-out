@@ -1,3 +1,6 @@
-app_name = "outputs"
+from django.urls import include, path
 
-urlpatterns = []
+urlpatterns = [
+    path("contributions/", include("apps.outputs.contributions.urls")),
+    path("elements/", include("apps.outputs.elements.urls")),
+]
