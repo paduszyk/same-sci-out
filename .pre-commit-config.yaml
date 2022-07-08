@@ -20,4 +20,4 @@ repos:
     rev: v1.4
     hooks:
       - id: docformatter
-        args: [--in-place]
+        args: ['--in-place', '--wrap-summaries', '88']
