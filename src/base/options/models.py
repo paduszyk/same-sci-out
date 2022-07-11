@@ -9,6 +9,12 @@ class Model(models.Model):
     class Meta:
         abstract = True
 
+    @classmethod
+    @property
+    def pk_name(cls):
+        """Return the model's PK field name."""
+        return cls._meta.pk.name
+
     @property
     def admin_change_url(self):
         """Reverse the object's admin change page URL."""
