@@ -137,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Users & authentication settings
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "accounts.User"
 
 
 # Internationalization
