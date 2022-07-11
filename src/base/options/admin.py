@@ -11,6 +11,34 @@ class ModelAdmin(admin.ModelAdmin):
     change_object_phrase = _("edytuj")
     object_class_prefix = _("obiekt typu")
 
+    # Overwrite the base ModelAdmin options
+    ordering = ()
+    list_display = ()
+
+    def __init__(self, *args, **kwargs):
+        """Overwrite the base constructor."""
+        super().__init__(*args, **kwargs)
+
+        pk = self.model.pk_name
+
+        # By default, the objects are ordered first by PK-field descending.
+        # This displays the newest objects at the top of the changelist.
+        ordering = self.ordering or (f"-{pk}",)
+        if pk not in [o[1:] if o.startswith("-") else o for o in ordering]:
+            ordering = (f"-{pk}", *ordering)
+        self.ordering = ordering  # TODO Implement this within `get_ordering` method
+
+    def get_list_display(self, request):
+        """Specify the list of fields to be displayed in the changelist."""
+        pk = self.model.pk_name
+
+        # By default, always list PK as the very first column of the changelist,
+        # unless the PK field is given in `list_display` option.
+        list_display = self.list_display or (pk, "__str__")
+        if pk not in list_display:
+            list_display = (pk, *list_display)
+        return list_display
+
     def changeform_view(self, request, object_id, form_url, extra_context=None):
         """Override the base class method."""
         extra_context = extra_context or {}
