@@ -40,6 +40,35 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     class Media:
         css = {"all": ("admin/accounts/user/change_list_extras.css",)}
 
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (
+            _("Informacje osobiste"),
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "sex",
+                )
+            },
+        ),
+        (
+            _("Uprawnienia"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (_("Ważne daty"), {"fields": ("last_login", "date_joined")}),
+    )
+    radio_fields = {"sex": admin.HORIZONTAL}
+
     list_display = (
         "username",
         "last_name",

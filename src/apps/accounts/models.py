@@ -7,6 +7,17 @@ from base.options import models
 class User(AbstractUser, models.Model):
     """A class to represent User objects."""
 
+    sex = models.CharField(
+        _("płeć"),
+        max_length=1,
+        choices=[
+            ("", _("nie chcę podawać")),
+            ("F", _("kobieta")),
+            ("M", _("mężczyzna")),
+        ],
+        blank=True,
+    )
+
     def __init__(self, *args, **kwargs):
         """Overwrite the base constructor."""
         super().__init__(*args, **kwargs)
