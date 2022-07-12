@@ -41,7 +41,7 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
         css = {"all": ("admin/accounts/user/change_list_extras.css",)}
 
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "slug")}),
         (
             _("Informacje osobiste"),
             {

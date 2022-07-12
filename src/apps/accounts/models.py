@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 from base.options import models
@@ -17,6 +18,7 @@ class User(AbstractUser, models.Model):
         ],
         blank=True,
     )
+    slug = models.SlugField(_("Slug"), blank=True)
 
     def __init__(self, *args, **kwargs):
         """Overwrite the base constructor."""
@@ -31,3 +33,14 @@ class User(AbstractUser, models.Model):
             "is_superuser": _("Superużytkownik"),
         }.items():
             self._meta.get_field(old_name).verbose_name = new_name
+
+        # Update help text of the `slug` field
+        self._meta.get_field("slug").help_text = _(
+            "Identyfikator w adresach URL. Domyślnie, wartość pola %s."
+        ) % capfirst(self._meta.get_field("username").verbose_name)
+
+    def clean(self):
+        """Perform model-wide validation and updates."""
+        # Handle empty `slug` field
+        if not self.slug:
+            self.slug = self.username
