@@ -8,3 +8,7 @@ class AccountsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.accounts"
     verbose_name = _("Konta")
+
+    def ready(self):
+        """Run this code when the Django starts."""
+        from . import signals  # NOQA

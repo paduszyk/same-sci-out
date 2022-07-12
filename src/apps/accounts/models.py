@@ -1,8 +1,32 @@
+import os
+import uuid
+
 from django.contrib.auth.models import AbstractUser
+from django.templatetags.static import static
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 from base.options import models
+
+# User photo and icon dirs and sizes
+
+USER_PHOTO_DIR = os.path.join("accounts", "photos")
+USER_PHOTO_SIZE = (512, 512)
+
+USER_ICON_DIR = os.path.join("accounts", "icons")
+USER_ICON_SIZE = (64, 64)
+
+
+def photo_upload_path(instance, file_name):
+    """Return a path to upload photos associated with User objects."""
+    _, file_ext = os.path.splitext(file_name)
+    return os.path.join(USER_PHOTO_DIR, str(uuid.uuid4()) + file_ext)
+
+
+def icon_upload_path(instance, file_name):
+    """Return a path to upload icons associated with User objects."""
+    _, file_ext = os.path.splitext(file_name)
+    return os.path.join(USER_ICON_DIR, str(uuid.uuid4()) + file_ext)
 
 
 class User(AbstractUser, models.Model):
@@ -12,13 +36,33 @@ class User(AbstractUser, models.Model):
         _("płeć"),
         max_length=1,
         choices=[
-            ("", _("nie chcę podawać")),
+            ("U", _("nie chcę podawać")),
             ("F", _("kobieta")),
             ("M", _("mężczyzna")),
         ],
-        blank=True,
+        default="F",
     )
     slug = models.SlugField(_("Slug"), blank=True)
+    photo = models.ImageField(
+        verbose_name=_("zdjęcie"),
+        upload_to=photo_upload_path,
+        blank=True,
+        null=True,
+        help_text=_(
+            "Przesłane zdjęcie zostanie wykadrowane obszarem największego "
+            "i wyśrodkowanego kwadratu oraz przeskalowane do rozmiaru (%d x %d) px.<br>"
+            "Dodatkowo na serwerze zostanie zapisana ikona o rozmiarze (%d x %d) px "
+            "będąca pomniejszoną wersją zdjęcia (bez kadrowania)."
+        )
+        % (*USER_PHOTO_SIZE, *USER_ICON_SIZE),
+    )
+    icon = models.ImageField(
+        verbose_name=_("ikona"),
+        upload_to=icon_upload_path,
+        blank=True,
+        null=True,
+        editable=False,
+    )
 
     def __init__(self, *args, **kwargs):
         """Overwrite the base constructor."""
@@ -44,3 +88,9 @@ class User(AbstractUser, models.Model):
         # Handle empty `slug` field
         if not self.slug:
             self.slug = self.username
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+
+        static("img/default_icon_")

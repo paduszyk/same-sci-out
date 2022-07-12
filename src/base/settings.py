@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "apps.employees",
     "apps.outputs",
     "apps.extras",
+    "django_cleanup",
 ]
 
 

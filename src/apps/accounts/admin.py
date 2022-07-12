@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.db.models import Q
+from django.templatetags.static import static
 from django.utils.html import format_html
+from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 
@@ -50,6 +52,7 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
                     "last_name",
                     "email",
                     "sex",
+                    "photo",
                 )
             },
         ),
@@ -74,6 +77,7 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
         "last_name",
         "first_name",
         "email",
+        "photo_display",
         "last_login",
         "is_active",
         "is_staff",
@@ -82,6 +86,18 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     list_filter = ("is_active", "is_staff", "is_superuser", MissingDataFilter)
     list_editable = ("is_active", "is_staff", "is_superuser")
     actions = ("activate_selected", "deactivate_selected")
+
+    @admin.display(description=capfirst(User._meta.get_field("photo").verbose_name))
+    def photo_display(self, obj):
+        """Return HTML code displaying the user icon."""
+        return format_html(
+            '<img src="{url}" alt="{obj}" title="{obj}"></img>'.format(
+                url=obj.icon.url
+                if obj.icon
+                else None or static(f"admin/accounts/user/user-{obj.sex.lower()}.png"),
+                obj=obj,
+            )
+        )
 
     @admin.action(description=_("Aktywuj wybranych użytkowników"))
     def activate_selected(self, request, queryset):

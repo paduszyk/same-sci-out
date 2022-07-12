@@ -1,4 +1,19 @@
-td[class*="field-is_"],
-th[class*="column-is_"]>div {
+#result_list td[class*="-is_"],
+#result_list th[class*="-is_"] div {
     text-align: center;
+}
+
+#result_list td[class*="photo"],
+#result_list th[class*="photo"] div {
+    text-align: center;
+}
+
+#result_list td[class*="photo"] img {
+    border-radius: 50%;
+    max-height: 32px;
+}
+
+#result_list td,
+#result_list th {
+    vertical-align: middle;
 }
