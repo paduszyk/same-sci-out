@@ -39,6 +39,17 @@ class ModelAdmin(admin.ModelAdmin):
             list_display = (pk, *list_display)
         return list_display
 
+    def get_actions(self, request):
+        """Override the base class method."""
+        actions = super().get_actions(request)
+
+        # Update description of the default `delete_selected` action
+        actions["delete_selected"] = (
+            *actions["delete_selected"][:2],
+            _("Usuń wybrane obiekty"),
+        )
+        return actions
+
     def changeform_view(self, request, object_id, form_url, extra_context=None):
         """Override the base class method."""
         extra_context = extra_context or {}
