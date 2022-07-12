@@ -8,6 +8,8 @@ django = "*"
 mysqlclient = "*"
 python-dotenv = "*"
 django-debug-toolbar = "*"
+pillow = "*"
+django-cleanup = "*"
 
 [dev-packages]
 ipython = "*"
