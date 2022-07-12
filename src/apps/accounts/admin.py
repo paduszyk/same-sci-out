@@ -37,14 +37,21 @@ class MissingDataFilter(admin.SimpleListFilter):
 class UserAdmin(admin.ModelAdmin, UserAdmin):
     """Admin options and functionalities for the User model."""
 
+    class Media:
+        css = {"all": ("admin/accounts/user/change_list_extras.css",)}
+
     list_display = (
         "username",
         "last_name",
         "first_name",
         "email",
         "last_login",
+        "is_active",
+        "is_staff",
+        "is_superuser",
     )
     list_filter = ("is_active", "is_staff", "is_superuser", MissingDataFilter)
+    list_editable = ("is_active", "is_staff", "is_superuser")
     actions = ("activate_selected", "deactivate_selected")
 
     @admin.action(description=_("Aktywuj wybranych użytkowników"))

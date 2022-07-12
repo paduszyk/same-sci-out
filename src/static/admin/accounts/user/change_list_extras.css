@@ -1,0 +1,4 @@
+td[class*="field-is_"],
+th[class*="column-is_"]>div {
+    text-align: center;
+}
