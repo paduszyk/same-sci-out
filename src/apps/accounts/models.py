@@ -12,8 +12,11 @@ class User(AbstractUser, models.Model):
         super().__init__(*args, **kwargs)
 
         # Update the verbose names for some fields
-        self._meta.get_field("username").verbose_name = _("Nazwa")
-        self._meta.get_field("first_name").verbose_name = _("Imiona")
-        self._meta.get_field("email").verbose_name = _("E-mail")
-        self._meta.get_field("is_staff").verbose_name = _("Administrator")
-        self._meta.get_field("is_superuser").verbose_name = _("Superużytkownik")
+        for old_name, new_name in {
+            "username": _("Nazwa"),
+            "first_name": _("Imiona"),
+            "email": _("E-mail"),
+            "is_staff": _("Administrator"),
+            "is_superuser": _("Superużytkownik"),
+        }.items():
+            self._meta.get_field(old_name).verbose_name = new_name
