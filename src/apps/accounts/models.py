@@ -12,6 +12,7 @@ class User(AbstractUser, models.Model):
         super().__init__(*args, **kwargs)
 
         # Update the verbose names for some fields
+        self._meta.get_field("username").verbose_name = _("Nazwa")
         self._meta.get_field("first_name").verbose_name = _("Imiona")
         self._meta.get_field("email").verbose_name = _("E-mail")
         self._meta.get_field("is_staff").verbose_name = _("Administrator")
