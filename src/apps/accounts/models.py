@@ -40,7 +40,7 @@ class User(AbstractUser, models.Model):
             ("F", _("kobieta")),
             ("M", _("mężczyzna")),
         ],
-        default="F",
+        default="U",
     )
     slug = models.SlugField(_("Slug"), blank=True)
     photo = models.ImageField(
