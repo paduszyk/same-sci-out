@@ -100,9 +100,7 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
 
     list_display = (
         "username",
-        "last_name",
-        "first_name",
-        "email",
+        "full_name",
         "photo_display",
         "last_login",
         "is_active",
@@ -118,6 +116,11 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     )
     list_editable = ("is_active", "is_staff", "is_superuser")
     actions = ("activate_selected", "deactivate_selected", "delete_photo_of_selected")
+
+    @admin.display(description=_("Nazwisko i imiona"))
+    def full_name(self, obj):
+        """Return the user's full name."""
+        return obj.get_full_name()
 
     @admin.display(description=capfirst(User._meta.get_field("photo").verbose_name))
     def photo_display(self, obj):

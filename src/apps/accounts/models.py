@@ -83,6 +83,29 @@ class User(AbstractUser, models.Model):
             "Identyfikator w adresach URL. Domyślnie, wartość pola %s."
         ) % capfirst(self._meta.get_field("username").verbose_name)
 
+    def __str__(self):
+        """Define how to print the object."""
+        return f"{self.get_short_name()} ({self.username})"
+
+    def get_full_name(self):
+        """Return the user's full name."""
+        first_name = (
+            "{} {}".format(
+                first_names[0],
+                " ".join([f"{first_name[:1]}." for first_name in first_names[1:]]),
+            )
+            if (first_names := self.first_name.split())
+            else self.first_name
+        )
+        return f"{self.last_name} {first_name}".strip() or "-"
+
+    def get_short_name(self):
+        """Return the user's short name."""
+        return "{} {}".format(
+            self.last_name,
+            " ".join([f"{first_name[:1]}." for first_name in self.first_name.split()]),
+        ).strip()
+
     def clean(self):
         """Perform model-wide validation and updates."""
         # Handle empty `slug` field
