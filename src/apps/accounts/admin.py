@@ -2,9 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from django.templatetags.static import static
 from django.utils.html import format_html
-from django.utils.text import capfirst
+from django.utils.text import capfirst, format_lazy
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 
@@ -40,7 +39,15 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     """Admin options and functionalities for the User model."""
 
     class Media:
-        css = {"all": ("admin/accounts/user/change_list_extras.css",)}
+        css = {
+            "all": (
+                User.get_static_path(
+                    "change_list.css",
+                    model=True,
+                    admin=True,
+                ),
+            )
+        }
 
     fieldsets = (
         (None, {"fields": ("username", "password", "slug")}),
@@ -91,11 +98,12 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     def photo_display(self, obj):
         """Return HTML code displaying the user icon."""
         return format_html(
-            '<img src="{url}" alt="{obj}" title="{obj}"></img>'.format(
-                url=obj.icon.url
-                if obj.icon
-                else None or static(f"admin/accounts/user/user-{obj.sex.lower()}.png"),
-                obj=obj,
+            format_lazy(
+                '<a href="{}" target="_blank" title="{}"><img src="{}" alt="{}"></a>',
+                obj.photo_url,
+                _("Przejdź do zdjęcia"),
+                obj.icon_url,
+                _("Zdjęcie profilowe użytkownika: %s") % obj,
             )
         )
 

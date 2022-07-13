@@ -89,8 +89,16 @@ class User(AbstractUser, models.Model):
         if not self.slug:
             self.slug = self.username
 
-    def get_photo_url(self):
+    @property
+    def photo_url(self):
+        """Return the user's photo URL."""
         if self.photo:
             return self.photo.url
+        return static(self.get_static_path(f"photo-{self.sex}.png", model=True))
 
-        static("img/default_icon_")
+    @property
+    def icon_url(self):
+        """Return the user's icon URL."""
+        if self.icon:
+            return self.icon.url
+        return static(self.get_static_path(f"icon-{self.sex}.png", model=True))
