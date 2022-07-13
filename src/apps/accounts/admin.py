@@ -92,7 +92,7 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
     )
     list_filter = ("is_active", "is_staff", "is_superuser", MissingDataFilter)
     list_editable = ("is_active", "is_staff", "is_superuser")
-    actions = ("activate_selected", "deactivate_selected")
+    actions = ("activate_selected", "deactivate_selected", "delete_photo_of_selected")
 
     @admin.display(description=capfirst(User._meta.get_field("photo").verbose_name))
     def photo_display(self, obj):
@@ -176,6 +176,28 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
                     queryset.count(),
                 ),
                 level=messages.SUCCESS,
+            )
+
+    @admin.action(description=_("Usuń zdjęcia wybranych użytkowników"))
+    def delete_photo_of_selected(self, request, queryset):
+        """Delete photo files of the selected users."""
+        users_with_photo = queryset.exclude(photo__exact="")
+
+        for user in users_with_photo:
+            user.photo = None  # icon is removed automatically by the post_save signal
+            user.save()
+
+        if users_with_photo.exists():
+            self.message_user(
+                request,
+                message=_("Usunięto zdjęcia wybranych użytkowników."),
+                level=messages.SUCCESS,
+            )
+        else:
+            self.message_user(
+                request,
+                message=_("Wybrani użytkownicy nie mają przypisanego zdjęcia."),
+                level=messages.WARNING,
             )
 
 
