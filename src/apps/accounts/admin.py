@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 
 from base.options import admin
+from base.options.decorators import as_html
 
 from .models import User
 
@@ -123,16 +124,15 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
         return obj.get_full_name()
 
     @admin.display(description=capfirst(User._meta.get_field("photo").verbose_name))
+    @as_html
     def photo_display(self, obj):
         """Return HTML code displaying the user icon."""
-        return format_html(
-            format_lazy(
-                '<a href="{}" target="_blank" title="{}"><img src="{}" alt="{}"></a>',
-                obj.photo_url,
-                _("Przejdź do zdjęcia"),
-                obj.icon_url,
-                _("Zdjęcie profilowe użytkownika: %s") % obj,
-            )
+        return format_lazy(
+            '<a href="{}" target="_blank" title="{}"><img src="{}" alt="{}"></a>',
+            obj.photo_url,
+            _("Przejdź do zdjęcia"),
+            obj.icon_url,
+            _("Zdjęcie profilowe użytkownika: %s") % obj,
         )
 
     @admin.action(description=_("Aktywuj wybranych użytkowników"))

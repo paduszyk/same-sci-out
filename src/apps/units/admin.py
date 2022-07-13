@@ -1,6 +1,5 @@
-from django.utils.html import format_html
-
 from base.options import admin
+from base.options.decorators import as_html
 
 from .models import Department, Faculty, University
 
@@ -26,10 +25,11 @@ class FacultyAdmin(admin.ModelAdmin):
         description=University._meta.verbose_name,
         ordering="ancestor__name",
     )
+    @as_html
     def university__name(self, obj):
         """Return the faculty's university name."""
         university = obj.university
-        return format_html(university.get_admin_change_link(content=university.name))
+        return university.get_admin_change_link(content=university.name)
 
 
 @admin.register(Department)
@@ -45,16 +45,18 @@ class DepartmentAdmin(admin.ModelAdmin):
         description=Faculty._meta.verbose_name,
         ordering="ancestor__name",
     )
+    @as_html
     def faculty__name(self, obj):
         """Return the departments's faculty name."""
         faculty = obj.faculty
-        return format_html(faculty.get_admin_change_link(content=faculty.name))
+        return faculty.get_admin_change_link(content=faculty.name)
 
     @admin.display(
         description=University._meta.verbose_name,
         ordering="ancestor__ancestor__name",
     )
+    @as_html
     def university__name(self, obj):
         """Return the departments's university name."""
         university = obj.faculty.university
-        return format_html(university.get_admin_change_link(content=university.name))
+        return university.get_admin_change_link(content=university.name)
