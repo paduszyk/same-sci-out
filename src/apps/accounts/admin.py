@@ -34,6 +34,25 @@ class MissingDataFilter(admin.SimpleListFilter):
                 return queryset.exclude(lookup)
 
 
+class HasPhotoFilter(admin.SimpleListFilter):
+    """Filtering the User objects by their photos."""
+
+    parameter_name = "has_photo"
+    title = _("ze zdjęciem")
+
+    def lookups(self, request, model_admin):
+        """Return the filter lookups."""
+        return [(True, _("Tak")), (False, _("Nie"))]
+
+    def queryset(self, request, queryset):
+        """Update the changelist queryset based on the filter lookup selected."""
+        if (value := self.value()) in ["True", "False"]:
+            if value == "True":
+                return queryset.exclude(photo__exact="")
+            else:
+                return queryset.filter(photo__exact="")
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin, UserAdmin):
     """Admin options and functionalities for the User model."""
@@ -90,7 +109,13 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
         "is_staff",
         "is_superuser",
     )
-    list_filter = ("is_active", "is_staff", "is_superuser", MissingDataFilter)
+    list_filter = (
+        "is_active",
+        "is_staff",
+        "is_superuser",
+        MissingDataFilter,
+        HasPhotoFilter,
+    )
     list_editable = ("is_active", "is_staff", "is_superuser")
     actions = ("activate_selected", "deactivate_selected", "delete_photo_of_selected")
 
