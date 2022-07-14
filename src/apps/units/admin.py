@@ -10,6 +10,12 @@ from .models import Department, Faculty, University
 class UniversityAdmin(admin.ModelAdmin):
     """Admin options and functionalities for the University model."""
 
+    class FacultyInline(admin.TabularInline):
+        model = Faculty
+        extra = 1
+
+    inlines = (FacultyInline,)
+
     list_display = ("name", "abbr", "faculty__list")
     search_fields = ("name", "abbr")
 
@@ -29,11 +35,16 @@ class UniversityAdmin(admin.ModelAdmin):
 class FacultyAdmin(admin.ModelAdmin):
     """Admin options and functionalities for the Faculty model."""
 
+    class DepartmentInline(admin.TabularInline):
+        model = Department
+        extra = 1
+
     fieldsets = (
         (None, {"fields": ("name", "abbr")}),
         (_("Jednostka nadrzędna"), {"fields": ("ancestor",)}),
     )
     autocomplete_fields = ("ancestor",)
+    inlines = (DepartmentInline,)
 
     list_display = ("name", "abbr", "university__name", "department__list")
     search_fields = ("name", "abbr")
