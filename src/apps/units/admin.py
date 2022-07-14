@@ -28,8 +28,7 @@ class FacultyAdmin(admin.ModelAdmin):
     @as_html
     def university__name(self, obj):
         """Return the faculty's university name."""
-        university = obj.university
-        return university.get_admin_change_link(content=university.name)
+        return obj.university.get_admin_change_link(content="name")
 
 
 @admin.register(Department)
@@ -48,8 +47,7 @@ class DepartmentAdmin(admin.ModelAdmin):
     @as_html
     def faculty__name(self, obj):
         """Return the departments's faculty name."""
-        faculty = obj.faculty
-        return faculty.get_admin_change_link(content=faculty.name)
+        return obj.faculty.get_admin_change_link(content="name")
 
     @admin.display(
         description=University._meta.verbose_name,
@@ -58,5 +56,4 @@ class DepartmentAdmin(admin.ModelAdmin):
     @as_html
     def university__name(self, obj):
         """Return the departments's university name."""
-        university = obj.faculty.university
-        return university.get_admin_change_link(content=university.name)
+        return obj.faculty.university.get_admin_change_link(content="name")

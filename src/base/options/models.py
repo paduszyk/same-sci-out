@@ -33,7 +33,7 @@ class Model(models.Model):
         attrs.update({"href": self.admin_change_url})
         return "<a {}>{}</a>".format(
             " ".join(f'{attr}="{value}"' for attr, value in attrs.items()),
-            content or str(self),
+            getattr(self, content or "", content) or str(self),
         )
 
     @classmethod
