@@ -30,6 +30,17 @@ class UniversityAdmin(admin.ModelAdmin):
         else:
             return "-"
 
+    def get_queryset(self, request):
+        """Override the base class method."""
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related(
+                "faculties",
+                "faculties__departments",
+            )
+        )
+
 
 @admin.register(Faculty)
 class FacultyAdmin(admin.ModelAdmin):
@@ -69,6 +80,17 @@ class FacultyAdmin(admin.ModelAdmin):
             )
         return "-"
 
+    def get_queryset(self, request):
+        """Override the base class method."""
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related(
+                "ancestor",
+                "departments",
+            )
+        )
+
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
@@ -100,3 +122,14 @@ class DepartmentAdmin(admin.ModelAdmin):
     def university__name(self, obj):
         """Return the departments's university name."""
         return obj.faculty.university.get_admin_change_link(content="name")
+
+    def get_queryset(self, request):
+        """Override the base class method."""
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related(
+                "ancestor",
+                "ancestor__ancestor",
+            )
+        )
