@@ -1,0 +1,25 @@
+/* Inline form sets styling */
+
+/* Remove the string versions of the inline objects */
+.inline-group .tabular td.original p {
+    display: none;
+}
+
+/* Adjust top padding of the first inline item */
+.inline-group .tabular tr.has_original td {
+    padding-top: 8px;
+}
+
+/* Center the checkboxes and close buttons in the Delete column */
+td.delete {
+    text-align: center;
+}
+
+td.delete div {
+    display: flex;
+    justify-content: center;
+}
+
+th:not([class]) {
+    text-align: center;
+}

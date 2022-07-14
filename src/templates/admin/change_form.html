@@ -1,6 +1,13 @@
 {% extends "admin/change_form.html" %}
 {% load i18n static admin_urls admin_modify %}
 
+{% block extrastyle %}
+{{ block.super }}
+{# Add some styling to inline formsets #}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/inlines.css" %}">
+{% endblock %}
+
+{# Include some generalization regarding displaying the objects names in breadcrumbs #}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% translate "Strona główna" %}</a>

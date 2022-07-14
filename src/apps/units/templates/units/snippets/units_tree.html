@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{# TODO Simplify/generalize it, try to apply less conditionals #}
+
+{% if universities.exists %}
+<h1>{{ app_verbose_name }}: {% translate "dane" %}</h1>
+<ul class="units-tree universities">
+  {% for university in universities %}
+  <li>
+    <a href="{{ university.admin_change_url }}">{{ university.name }}</a>
+    {% if university.faculties.exists %}
+    <ul class="units-tree faculties">
+      {% for faculty in university.faculties.all %}
+      <li>
+        <a href="{{ faculty.admin_change_url }}">{{ faculty.name }}</a>
+        {% if faculty.departments.exists %}
+        <ul class="units-tree departments">
+          {% for department in faculty.departments.all %}
+          <li>
+            <a href="{{ department.admin_change_url }}">{{ department.name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
