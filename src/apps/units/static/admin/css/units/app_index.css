@@ -1,0 +1,33 @@
+/* Styling ul's representing the units structure in the units app index */
+
+.units-tree,
+.units-tree>li {
+    padding-inline-start: 0.5rem;
+    list-style-type: none;
+}
+
+.universities,
+.universities>li {
+    padding-inline-start: 0px;
+}
+
+.faculties,
+.departments {
+    border-left-style: solid;
+    border-left-color: var(--border-color);
+    border-left-width: 1px;
+}
+
+.universities>li {
+    font-size: large;
+    margin-bottom: 0.5rem;
+}
+
+.faculties>li {
+    font-size: medium;
+    margin-bottom: 0.5rem;
+}
+
+.departments>li {
+    font-size: small;
+}

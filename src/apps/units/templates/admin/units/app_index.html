@@ -1,0 +1,15 @@
+{% extends "admin/app_index.html" %}
+
+{% load i18n static units_tags %}
+
+{% block extrastyle %}
+{{ block.super }}
+{# Include the styling for the ul's rendered using `units_tree` tag #}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/units/app_index.css' %}">
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{# Render the structure of units saved in the database as nested unordered list #}
+{% units_tree %}
+{% endblock %}
