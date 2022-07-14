@@ -53,7 +53,7 @@ class Faculty(Unit):
     ancestor = models.ForeignKey(
         to=University,
         on_delete=models.CASCADE,
-        verbose_name=University._meta.verbose_name_plural,
+        verbose_name=University._meta.verbose_name,
         related_name="faculties",
     )
 

@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 from base.options import admin
 from base.options.decorators import as_html
 
@@ -27,6 +29,10 @@ class UniversityAdmin(admin.ModelAdmin):
 class FacultyAdmin(admin.ModelAdmin):
     """Admin options and functionalities for the Faculty model."""
 
+    fieldsets = (
+        (None, {"fields": ("name", "abbr")}),
+        (_("Jednostka nadrzędna"), {"fields": ("ancestor",)}),
+    )
     autocomplete_fields = ("ancestor",)
 
     list_display = ("name", "abbr", "university__name", "department__list")
@@ -57,6 +63,10 @@ class FacultyAdmin(admin.ModelAdmin):
 class DepartmentAdmin(admin.ModelAdmin):
     """Admin options and functionalities for the Department model."""
 
+    fieldsets = (
+        (None, {"fields": ("name", "abbr")}),
+        (_("Jednostka nadrzędna"), {"fields": ("ancestor",)}),
+    )
     autocomplete_fields = ("ancestor",)
 
     list_display = ("name", "abbr", "faculty__name", "university__name")
