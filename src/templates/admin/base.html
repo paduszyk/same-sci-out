@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+{# Include extra project-wide styles #}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/extras.css' %}">
+{% endblock %}

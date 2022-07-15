@@ -41,7 +41,7 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "base.apps.AdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

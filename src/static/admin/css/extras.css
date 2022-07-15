@@ -1,0 +1,10 @@
+/* Extra project-wide styles for the admin site */
+
+.badge {
+    background-color: var(--object-tools-bg);
+    font-size: smaller;
+    color: var(--primary-fg);
+    padding: 2px 8px;
+    text-align: center;
+    border-radius: 4px;
+}

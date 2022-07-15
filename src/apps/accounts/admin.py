@@ -69,6 +69,8 @@ class UserAdmin(admin.ModelAdmin, UserAdmin):
             )
         }
 
+    show_objects_count = False
+
     fieldsets = (
         (None, {"fields": ("username", "password", "slug")}),
         (

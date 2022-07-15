@@ -11,6 +11,8 @@ class ModelAdmin(admin.ModelAdmin):
     change_object_phrase = _("edytuj")
     object_class_prefix = _("obiekt typu")
 
+    show_objects_count = True
+
     # Overwrite the base ModelAdmin options
     ordering = ()
     list_display = ()
