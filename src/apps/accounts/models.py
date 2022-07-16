@@ -85,7 +85,11 @@ class User(AbstractUser, models.Model):
 
     def __str__(self):
         """Define how to print the object."""
-        return f"{self.get_short_name()} ({self.username})"
+        short_name = self.get_short_name()
+        return "{} {}".format(
+            short_name,
+            f"({self.username})" if short_name else self.username,
+        ).strip()
 
     def get_full_name(self):
         """Return the user's full name."""
