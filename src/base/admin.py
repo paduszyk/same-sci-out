@@ -26,6 +26,16 @@ class AdminSite(admin.AdminSite):
                 model_admin = self._registry[model["model"]]
                 if model_admin.show_objects_count:
                     model.update({"count": model["model"].objects.count()})
+                if model["model"].requires_approval():
+                    model.update(
+                        {
+                            "require_approval_count": model["model"]
+                            .objects.filter(
+                                **{model["model"].APPROVED_FIELD_NAME: False}
+                            )
+                            .count()
+                        }
+                    )
 
         # Return only the data for a specific app is the `label` is not None
         if label:

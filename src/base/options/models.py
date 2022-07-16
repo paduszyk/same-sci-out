@@ -3,6 +3,9 @@ import os
 from django.db import models
 from django.db.models import *  # NOQA
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+APPROVED_FIELD_NAME = "_approved"
 
 
 class Model(models.Model):
@@ -71,3 +74,44 @@ class Model(models.Model):
             cls._meta.model_name if model else "",
             file_name,
         )
+
+    @classmethod
+    def requires_approval(cls):
+        """Check if the model objects require approval."""
+        return hasattr(cls, APPROVED_FIELD_NAME)
+
+
+def approval_required(cls):
+    """Add a boolean field indicating whether the objects need the staff approval."""
+    # Define the name for the field accounting for the approval status
+    cls.APPROVED_FIELD_NAME = APPROVED_FIELD_NAME
+
+    models.BooleanField(
+        _("zatwierdzono"),
+        default=False,
+        editable=False,
+    ).contribute_to_class(cls, cls.APPROVED_FIELD_NAME)
+
+    def is_approved(self):
+        """Check if the object is approved."""
+        return getattr(self, cls.APPROVED_FIELD_NAME)
+
+    def approve(self, commit=False):
+        """Approve the object."""
+        if not self.is_approved():
+            setattr(self, cls.APPROVED_FIELD_NAME, True)
+            if commit:
+                self.save()
+
+    def disapprove(self, commit=False):
+        """Disapprove the object."""
+        if self.is_approved():
+            setattr(self, cls.APPROVED_FIELD_NAME, False)
+            if commit:
+                self.save()
+
+    cls.is_approved = is_approved
+    cls.approve = approve
+    cls.disapprove = disapprove
+
+    return cls

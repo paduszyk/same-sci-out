@@ -30,6 +30,10 @@ class ModelAdmin(admin.ModelAdmin):
             ordering = (f"-{pk}", *ordering)
         self.ordering = ordering  # TODO Implement this within `get_ordering` method
 
+    def add_approval_info(self):
+        """Check if the model admin regards the model requiring approval."""
+        return self.model.requires_approval()
+
     def get_list_display(self, request):
         """Specify the list of fields to be displayed in the changelist."""
         pk = self.model.pk_name
@@ -39,10 +43,21 @@ class ModelAdmin(admin.ModelAdmin):
         list_display = self.list_display or (pk, "__str__")
         if pk not in list_display:
             list_display = (pk, *list_display)
+        if self.add_approval_info():
+            list_display = (*list_display, self.model.APPROVED_FIELD_NAME)
         return list_display
 
     def get_actions(self, request):
         """Override the base class method."""
+        # Include the actions for the models requiring approval
+        if self.add_approval_info():
+            if self.actions is not None:
+                self.actions = (
+                    *self.actions,
+                    "approve_selected",
+                    "disapprove_selected",
+                )
+
         actions = super().get_actions(request)
 
         # Update description of the default `delete_selected` action
@@ -96,3 +111,15 @@ class ModelAdmin(admin.ModelAdmin):
             }
         )
         return super().changelist_view(request, extra_context)
+
+    @admin.action(description=_("Zatwierdź wybrane obiekty"))
+    def approve_selected(self, request, queryset):
+        """Approve the selected objects."""
+        for obj in queryset.filter(**{self.model.APPROVED_FIELD_NAME: False}):
+            obj.approve(commit=True)
+
+    @admin.action(description=_("Cofnij zatwierdzenie wybranych obiektów"))
+    def disapprove_selected(self, request, queryset):
+        """Disapprove the selected objects."""
+        for obj in queryset.filter(**{self.model.APPROVED_FIELD_NAME: True}):
+            obj.disapprove(commit=True)

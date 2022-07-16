@@ -14,6 +14,12 @@
             {% else %}
               <th scope="row">{{ model.name }}</th>
             {% endif %}
+            {# Add badge representing count of objects requiring approval #}
+            <td>
+              {% if model.require_approval_count %}
+                <span class="badge disapproved">{{ model.require_approval_count }}</span>
+              {% endif %}
+            </td>
             {# Add objects count bagde #}
             <td>
             {% if model.count %}
