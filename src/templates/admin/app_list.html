@@ -17,7 +17,7 @@
             {# Add badge representing count of objects requiring approval #}
             <td>
               {% if model.require_approval_count %}
-                <span class="badge disapproved">{{ model.require_approval_count }}</span>
+                <a href="{{ model.model.disapproved_objects_url}}"><span class="badge disapproved">{{ model.require_approval_count }}</span></a>
               {% endif %}
             </td>
             {# Add objects count bagde #}

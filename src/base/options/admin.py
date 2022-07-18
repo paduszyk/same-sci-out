@@ -67,6 +67,14 @@ class ModelAdmin(admin.ModelAdmin):
         )
         return actions
 
+    def get_list_filter(self, request):
+        """Override the base class method."""
+        list_filter = super().get_list_filter(request)
+        # Include approval filter
+        if self.add_approval_info():
+            list_filter = (*list_filter, self.model.APPROVED_FIELD_NAME)
+        return list_filter
+
     def changeform_view(self, request, object_id, form_url, extra_context=None):
         """Override the base class method."""
         extra_context = extra_context or {}

@@ -21,6 +21,16 @@ class Model(models.Model):
         return cls._meta.pk.name
 
     @property
+    def admin_changelist_url(self):
+        """Reverse the object's admin changelist page URL."""
+        return reverse(
+            "admin:{}_{}_changelist".format(
+                self._meta.app_label,
+                self._meta.model_name,
+            )
+        )
+
+    @property
     def admin_change_url(self):
         """Reverse the object's admin change page URL."""
         return reverse(
@@ -110,8 +120,18 @@ def approval_required(cls):
             if commit:
                 self.save()
 
+    def approved_objects_url(self):
+        """Return URL to approved objects changelist."""
+        return f"{self.admin_changelist_url}?{self.APPROVED_FIELD_NAME}__exact=True"
+
+    def disapproved_objects_url(self):
+        """Return URL to disapproved objects changelist."""
+        return f"{self.admin_changelist_url}?{self.APPROVED_FIELD_NAME}__exact=False"
+
     cls.is_approved = is_approved
     cls.approve = approve
     cls.disapprove = disapprove
+    cls.approved_objects_url = property(approved_objects_url)
+    cls.disapproved_objects_url = property(disapproved_objects_url)
 
     return cls
