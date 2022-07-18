@@ -1,5 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import *  # NOQA
+from django.http import HttpResponseRedirect
+from django.urls import path
+from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
@@ -74,6 +77,68 @@ class ModelAdmin(admin.ModelAdmin):
         if self.add_approval_info():
             list_filter = (*list_filter, self.model.APPROVED_FIELD_NAME)
         return list_filter
+
+    def get_urls(self):
+        """Override the base class method."""
+        urls = super().get_urls()
+
+        # Include some extra URLs
+        if self.add_approval_info():
+            info = self.model._meta.app_label, self.model._meta.model_name
+
+            urls = [
+                path(
+                    "<path:object_id>/approve/",
+                    view=self.approve_view,
+                    name="%s_%s_approve" % info,
+                ),
+                path(
+                    "<path:object_id>/disapprove/",
+                    view=self.disapprove_view,
+                    name="%s_%s_disapprove" % info,
+                ),
+            ] + urls
+
+        return urls
+
+    @property
+    def approve_view(self):
+        """Return a view to approve the object."""
+
+        def view(request, object_id):
+            obj = self.get_object(request, object_id)
+            obj.approve(commit=True)
+            self.message_user(
+                request,
+                message=format_html(
+                    _("Obiekt %s oznaczono jako zatwierdzony.")
+                    % obj.get_admin_change_link()
+                ),
+                level=messages.SUCCESS,
+            )
+            return HttpResponseRedirect(redirect_to=obj.admin_change_url)
+
+        return view
+
+    @property
+    def disapprove_view(self):
+        """Return a view to disapprove the object."""
+
+        def view(request, object_id):
+            obj = self.get_object(request, object_id)
+            obj.disapprove(commit=True)
+
+            self.message_user(
+                request,
+                message=format_html(
+                    _("Obiekt %s oznaczono jako niezatwierdzony.")
+                    % obj.get_admin_change_link()
+                ),
+                level=messages.SUCCESS,
+            )
+            return HttpResponseRedirect(redirect_to=obj.admin_change_url)
+
+        return view
 
     def changeform_view(self, request, object_id, form_url, extra_context=None):
         """Override the base class method."""

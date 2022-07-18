@@ -20,13 +20,13 @@ class Model(models.Model):
         """Return the model's PK field name."""
         return cls._meta.pk.name
 
-    @property
-    def admin_changelist_url(self):
+    @classmethod
+    def admin_changelist_url(cls):
         """Reverse the object's admin changelist page URL."""
         return reverse(
             "admin:{}_{}_changelist".format(
-                self._meta.app_label,
-                self._meta.model_name,
+                cls._meta.app_label,
+                cls._meta.model_name,
             )
         )
 
