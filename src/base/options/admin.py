@@ -47,7 +47,7 @@ class ModelAdmin(admin.ModelAdmin):
         if pk not in list_display:
             list_display = (pk, *list_display)
         if self.add_approval_info():
-            list_display = (*list_display, self.model.APPROVED_FIELD_NAME)
+            list_display = (*list_display, self.model.APPROVAL_STATUS_FIELD_NAME)
         return list_display
 
     def get_actions(self, request):
@@ -75,7 +75,7 @@ class ModelAdmin(admin.ModelAdmin):
         list_filter = super().get_list_filter(request)
         # Include approval filter
         if self.add_approval_info():
-            list_filter = (*list_filter, self.model.APPROVED_FIELD_NAME)
+            list_filter = (*list_filter, self.model.APPROVAL_STATUS_FIELD_NAME)
         return list_filter
 
     def get_urls(self):
@@ -89,50 +89,38 @@ class ModelAdmin(admin.ModelAdmin):
             urls = [
                 path(
                     "<path:object_id>/approve/",
-                    view=self.approve_view,
+                    view=self.approval_view(approve=True),
                     name="%s_%s_approve" % info,
                 ),
                 path(
                     "<path:object_id>/disapprove/",
-                    view=self.disapprove_view,
+                    view=self.approval_view(approve=False),
                     name="%s_%s_disapprove" % info,
                 ),
             ] + urls
 
         return urls
 
-    @property
-    def approve_view(self):
-        """Return a view to approve the object."""
+    def approval_view(self, approve=True):
+        """Return a view to approve/disapprove the object."""
 
         def view(request, object_id):
+            """A view to be returned."""
             obj = self.get_object(request, object_id)
-            obj.approve(commit=True)
-            self.message_user(
-                request,
-                message=format_html(
-                    _("Obiekt %s oznaczono jako zatwierdzony.")
-                    % obj.get_admin_change_link()
-                ),
-                level=messages.SUCCESS,
-            )
-            return HttpResponseRedirect(redirect_to=obj.admin_change_url)
 
-        return view
-
-    @property
-    def disapprove_view(self):
-        """Return a view to disapprove the object."""
-
-        def view(request, object_id):
-            obj = self.get_object(request, object_id)
-            obj.disapprove(commit=True)
+            if approve:
+                obj.approve()
+            else:
+                obj.disapprove()
 
             self.message_user(
                 request,
                 message=format_html(
-                    _("Obiekt %s oznaczono jako niezatwierdzony.")
-                    % obj.get_admin_change_link()
+                    _("Obiekt %s został oznaczony jako %s.")
+                    % (
+                        obj.get_admin_change_link(),
+                        _("zatwierdzony") if approve else _("niezatwierdzony"),
+                    )
                 ),
                 level=messages.SUCCESS,
             )
@@ -188,11 +176,11 @@ class ModelAdmin(admin.ModelAdmin):
     @admin.action(description=_("Zatwierdź wybrane obiekty"))
     def approve_selected(self, request, queryset):
         """Approve the selected objects."""
-        for obj in queryset.filter(**{self.model.APPROVED_FIELD_NAME: False}):
-            obj.approve(commit=True)
+        for obj in queryset.filter(**{self.model.APPROVAL_STATUS_FIELD_NAME: False}):
+            obj.approve()
 
-    @admin.action(description=_("Cofnij zatwierdzenie wybranych obiektów"))
+    @admin.action(description=_("Oznacz wybrane obiekty jako niezatwierdzone"))
     def disapprove_selected(self, request, queryset):
         """Disapprove the selected objects."""
-        for obj in queryset.filter(**{self.model.APPROVED_FIELD_NAME: True}):
-            obj.disapprove(commit=True)
+        for obj in queryset.filter(**{self.model.APPROVAL_STATUS_FIELD_NAME: True}):
+            obj.disapprove()

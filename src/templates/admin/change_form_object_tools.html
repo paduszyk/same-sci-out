@@ -6,7 +6,7 @@
 {# Include approvement/disapprovment button to the object tools #}
 {% if opts.model.requires_approval %}
   <li>
-    {% if original.is_approved %}
+    {% if original.approved %}
       <a href="{% url opts|admin_urlname:'disapprove' original.pk %}">{% translate "Oznacz jako niezatwierdzony" %}</a>
     {% else %}
       <a href="{% url opts|admin_urlname:'approve' original.pk %}">{% translate "Zatwierdź" %}</a>

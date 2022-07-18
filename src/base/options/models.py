@@ -5,7 +5,7 @@ from django.db.models import *  # NOQA
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-APPROVED_FIELD_NAME = "_approved"
+APPROVAL_STATUS_FIELD_NAME = "_approved"
 
 
 class Model(models.Model):
@@ -88,50 +88,48 @@ class Model(models.Model):
     @classmethod
     def requires_approval(cls):
         """Check if the model objects require approval."""
-        return hasattr(cls, APPROVED_FIELD_NAME)
+        return hasattr(cls, APPROVAL_STATUS_FIELD_NAME)
 
 
 def approval_required(cls):
     """Add a boolean field indicating whether the objects need the staff approval."""
     # Define the name for the field accounting for the approval status
-    cls.APPROVED_FIELD_NAME = APPROVED_FIELD_NAME
+    cls.APPROVAL_STATUS_FIELD_NAME = APPROVAL_STATUS_FIELD_NAME
 
     models.BooleanField(
-        _("zatwierdzono"),
+        _("zatwierdzony"),
         default=False,
         editable=False,
-    ).contribute_to_class(cls, cls.APPROVED_FIELD_NAME)
+    ).contribute_to_class(cls, cls.APPROVAL_STATUS_FIELD_NAME)
 
-    def is_approved(self):
+    def approved(self):
         """Check if the object is approved."""
-        return getattr(self, cls.APPROVED_FIELD_NAME)
+        return getattr(self, cls.APPROVAL_STATUS_FIELD_NAME)
 
-    def approve(self, commit=False):
+    def approve(self, commit=True):
         """Approve the object."""
-        if not self.is_approved():
-            setattr(self, cls.APPROVED_FIELD_NAME, True)
+        if not self.approved:
+            setattr(self, cls.APPROVAL_STATUS_FIELD_NAME, True)
             if commit:
                 self.save()
 
-    def disapprove(self, commit=False):
+    def disapprove(self, commit=True):
         """Disapprove the object."""
-        if self.is_approved():
-            setattr(self, cls.APPROVED_FIELD_NAME, False)
+        if self.approved:
+            setattr(self, cls.APPROVAL_STATUS_FIELD_NAME, False)
             if commit:
                 self.save()
 
-    def approved_objects_url(self):
-        """Return URL to approved objects changelist."""
-        return f"{self.admin_changelist_url}?{self.APPROVED_FIELD_NAME}__exact=True"
-
-    def disapproved_objects_url(self):
+    def disapproved_objects_url(cls):
         """Return URL to disapproved objects changelist."""
-        return f"{self.admin_changelist_url}?{self.APPROVED_FIELD_NAME}__exact=False"
+        return "%s?%s__exact=False" % (
+            cls.admin_changelist_url(),
+            cls.APPROVAL_STATUS_FIELD_NAME,
+        )
 
-    cls.is_approved = is_approved
+    cls.approved = property(approved)
     cls.approve = approve
     cls.disapprove = disapprove
-    cls.approved_objects_url = property(approved_objects_url)
-    cls.disapproved_objects_url = property(disapproved_objects_url)
+    cls.disapproved_objects_url = classmethod(disapproved_objects_url)
 
     return cls

@@ -31,7 +31,7 @@ class AdminSite(admin.AdminSite):
                         {
                             "require_approval_count": model["model"]
                             .objects.filter(
-                                **{model["model"].APPROVED_FIELD_NAME: False}
+                                **{model["model"].APPROVAL_STATUS_FIELD_NAME: False}
                             )
                             .count()
                         }
