@@ -16,3 +16,13 @@
   &rsaquo; {% if add %}{{ title }}{% else %}{% translate "Edytuj obiekt" %}: {{ original|truncatewords:"18" }}{% endif %}
 </div>
 {% endblock %}
+
+{# Include approvement status information in the case of the models whose object require the approvement #}
+{% block content_subtitle %}
+<h2>
+  {{ subtitle }}
+  {% if change and opts.model.requires_approval %}
+    <img src="{% static original.is_approved|yesno:'admin/img/icon-yes.svg,admin/img/icon-no.svg' %}" style="min-height: 16px; vertical-align: baseline;">
+  {% endif %}
+</h2>
+{% endblock %}
