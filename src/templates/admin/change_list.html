@@ -2,6 +2,19 @@
 
 {% load i18n admin_list %}
 
+{% block extrastyle %}
+{{ block.super }}
+
+{% if cl.model.requires_approval %}
+<style>
+  th.sortable.column-{{ cl.model.APPROVED_FIELD_NAME }},
+  td.field-{{ cl.model.APPROVED_FIELD_NAME }} {
+      text-align: center;
+  }
+</style>
+{% endif %}
+{% endblock %}
+
 {% block filters %}
   {% if cl.has_filters %}
     <div id="changelist-filter">
