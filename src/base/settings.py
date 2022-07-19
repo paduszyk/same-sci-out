@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.forms",
     "debug_toolbar",
     "apps.accounts",
+    "apps.units",
 ]
 
 
