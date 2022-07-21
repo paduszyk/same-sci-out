@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import *  # NOQA
 from django.utils.translation import gettext_lazy as _
 
+from .fields import YesNoAnswerField  # NOQA
+
 
 class YesNoQuestionChoices(models.IntegerChoices):
     """ALternative choices for polar boolean fields if they are intend to be
