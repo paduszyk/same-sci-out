@@ -26,6 +26,7 @@ class PositionAdminChangeForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
+        # Check if all the selected groups are teachers or not teachers
         if groups := cleaned_data.get("groups", None):
             teachers = groups.values_list("teachers", flat=True)
             if not (all(teachers) or not any(teachers)):

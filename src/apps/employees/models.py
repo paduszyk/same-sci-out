@@ -316,7 +316,8 @@ class Employment(models.Model):
         }
 
     def clean(self):
-        """Perform model-wide validation and updates."""
+        super().clean()
+
         # First, check if position and group were specified. If not, move on.
         # Note that the checks are based on `_id` attributes. Referring to fields
         # raises RelatedObjectDoesNotExist error.
