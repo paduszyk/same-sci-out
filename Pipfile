@@ -8,6 +8,8 @@ django = "*"
 mysqlclient = "*"
 python-dotenv = "*"
 django-debug-toolbar = "*"
+pandas = "*"
+openpyxl = "*"
 
 [dev-packages]
 ipython = "*"
