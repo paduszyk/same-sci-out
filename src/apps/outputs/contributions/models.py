@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.employees.models import Employee
 from base import models
 
-from .constants import AUTHORS_EMPLOYEES, AUTHORS_NOT_EMPLOYEES
+from .constants import AUTHORS_EMPLOYEES, AUTHORS_NOT_EMPLOYEES, ELEMENT_MODELS
 
 
 class AuthorGroupChoices(models.TextChoices):
@@ -171,6 +171,10 @@ class Contribution(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("rodzaj elementu"),
         related_name="contributions",
+        limit_choices_to={
+            "app_label__exact": "outputs",
+            "model__in": ELEMENT_MODELS,
+        },
     )
     object_id = models.PositiveIntegerField(
         _("ID elementu"),
