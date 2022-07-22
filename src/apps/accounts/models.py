@@ -20,7 +20,26 @@ class User(models.Model, AbstractUser):
         choices=SEX_CHOICES,
         default=SEX_DEFAULT,
     )
+    slug = models.SlugField(
+        _("Slug"),
+        blank=True,
+        null=True,
+        unique=True,
+        default=None,
+        help_text="%s<br>%s"
+        % (
+            _("Unikatowy tekstowy identyfikator w adresach URL."),
+            _("Domyślnie nazwa użytkownika."),
+        ),
+    )
 
     class Meta:
         verbose_name = _("użytkownik")
         verbose_name_plural = _("użytkownicy")
+
+    def clean(self):
+        super().clean()
+
+        # Handle empty `slug` field
+        if not self.slug:
+            self.slug = self.username
