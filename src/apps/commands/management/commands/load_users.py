@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 
+from apps.accounts.constants import SEX_DEFAULT
+
 import pandas as pd
 
 # Get the project's User model
@@ -24,6 +26,7 @@ USER_FIELDS = [
         "password",
         ("first_name", ""),
         ("last_name", ""),
+        ("sex", SEX_DEFAULT),
         ("email", ""),
         ("is_staff", False),
         ("is_superuser", False),
