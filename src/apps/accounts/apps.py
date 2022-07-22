@@ -9,3 +9,8 @@ class AccountsConfig(AppConfig):
 
     name = "apps.accounts"
     verbose_name = _("konta")
+
+    def ready(self):
+        super().ready()
+
+        from . import signals  # NOQA

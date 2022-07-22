@@ -10,6 +10,8 @@ python-dotenv = "*"
 django-debug-toolbar = "*"
 pandas = "*"
 openpyxl = "*"
+pillow = "*"
+django-cleanup = "*"
 
 [dev-packages]
 ipython = "*"
