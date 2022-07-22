@@ -2,17 +2,8 @@ from itertools import chain
 
 from django.db import models
 from django.db.models import *  # NOQA
-from django.utils.translation import gettext_lazy as _
 
-from .fields import YesNoAnswerField  # NOQA
-
-
-class YesNoQuestionChoices(models.IntegerChoices):
-    """ALternative choices for polar boolean fields if they are intend to be
-    rendered as Yes/No selects instead of checkboxes."""
-
-    YES = True, _("Tak")  # represented in DB as 1
-    NO = False, _("Nie")  # represented in DB as 0
+from .fields import NO, YES, YesNoAnswerField  # NOQA
 
 
 class Model(models.Model):

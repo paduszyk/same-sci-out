@@ -127,10 +127,9 @@ class Article(Element):
         ],
         help_text=_("Tylko DOI, nie URL z domeną „doi.org”."),
     )
-    open_access = models.BooleanField(
+    open_access = models.YesNoAnswerField(
         _("OA"),
-        default=False,
-        choices=models.YesNoQuestionChoices.choices,
+        default=models.NO,
         help_text=_("Open Access, artykuł z otwartym dostępem."),
     )
 

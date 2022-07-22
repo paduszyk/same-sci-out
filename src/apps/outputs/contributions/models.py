@@ -111,11 +111,7 @@ class AuthorStatus(models.Model):
         max_length=max([len(value) for value in AuthorGroupChoices.values]),
         choices=AuthorGroupChoices.choices,
     )
-    default = models.BooleanField(
-        _("domyślny dla grupy"),
-        default=False,
-        choices=models.YesNoQuestionChoices.choices,
-    )
+    default = models.YesNoAnswerField(_("domyślny dla grupy"), default=models.NO)
 
     class Meta:
         verbose_name = _("status autora")

@@ -45,11 +45,7 @@ class EmployeeGroup(models.Model):
         help_text=_("Przymiotnik, liczba mnoga, w mianowniku."),
     )
     abbr = models.CharField(_("skrót"), max_length=20)
-    teachers = models.BooleanField(
-        _("nauczyciele"),
-        default=False,
-        choices=models.YesNoQuestionChoices.choices,
-    )
+    teachers = models.YesNoAnswerField(_("nauczyciele"), default=models.YES)
 
     @property
     def _name_prefix(self):
@@ -166,11 +162,7 @@ class Employee(models.Model):
         blank=True,
         null=True,
     )
-    in_evaluation = models.BooleanField(
-        _("w liczbie N"),
-        default=False,
-        choices=models.YesNoQuestionChoices.choices,
-    )
+    in_evaluation = models.YesNoAnswerField(_("w liczbie N"), default=models.YES)
     discipline = models.ForeignKey(
         to=Discipline,
         on_delete=models.SET_NULL,
